@@ -269,7 +269,9 @@ export default function App() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showCancelMessage, setShowCancelMessage] = useState(false);
   const [isPlayingRestaurant, setIsPlayingRestaurant] = useState(false);
+  const [isPlayingProduct, setIsPlayingProduct] = useState(false);
   const restaurantAudioRef = useRef(null);
+  const productAudioRef = useRef(null);
   const scrollY = useScroll();
   const scrolled = scrollY > 20;
 
@@ -298,8 +300,31 @@ export default function App() {
         restaurantAudioRef.current.currentTime = 0;
         setIsPlayingRestaurant(false);
       } else {
+        if (productAudioRef.current && isPlayingProduct) {
+          productAudioRef.current.pause();
+          productAudioRef.current.currentTime = 0;
+          setIsPlayingProduct(false);
+        }
         restaurantAudioRef.current.play();
         setIsPlayingRestaurant(true);
+      }
+    }
+  };
+
+  const toggleProductAudio = () => {
+    if (productAudioRef.current) {
+      if (isPlayingProduct) {
+        productAudioRef.current.pause();
+        productAudioRef.current.currentTime = 0;
+        setIsPlayingProduct(false);
+      } else {
+        if (restaurantAudioRef.current && isPlayingRestaurant) {
+          restaurantAudioRef.current.pause();
+          restaurantAudioRef.current.currentTime = 0;
+          setIsPlayingRestaurant(false);
+        }
+        productAudioRef.current.play();
+        setIsPlayingProduct(true);
       }
     }
   };
@@ -308,6 +333,15 @@ export default function App() {
     const audio = restaurantAudioRef.current;
     if (audio) {
       const handleEnded = () => setIsPlayingRestaurant(false);
+      audio.addEventListener('ended', handleEnded);
+      return () => audio.removeEventListener('ended', handleEnded);
+    }
+  }, []);
+
+  useEffect(() => {
+    const audio = productAudioRef.current;
+    if (audio) {
+      const handleEnded = () => setIsPlayingProduct(false);
       audio.addEventListener('ended', handleEnded);
       return () => audio.removeEventListener('ended', handleEnded);
     }
@@ -501,14 +535,19 @@ export default function App() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
-          <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group">
+          <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group cursor-pointer" onClick={toggleProductAudio}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-white">Guiding a Customer Choose a Product</h3>
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-all">
-                <Play className="w-6 h-6 text-white" />
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isPlayingProduct ? 'bg-white/40 animate-pulse' : 'bg-white/20 group-hover:bg-white/30'}`}>
+                {isPlayingProduct ? <div className="flex space-x-1">
+                  {[1,2,3].map((i) => (
+                    <div key={i} className="w-1 bg-white rounded-full animate-music" style={{height: `${i * 4}px`, animationDelay: `${i * 0.1}s`}}></div>
+                  ))}
+                </div> : <Play className="w-6 h-6 text-white" />}
               </div>
             </div>
             <p className="text-slate-400 text-sm">Hear how Le Donna asks questions, understands needs, and recommends the perfect solution.</p>
+            <audio ref={productAudioRef} src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/choosing%20barbeque.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9jaG9vc2luZyBiYXJiZXF1ZS5tcDMiLCJpYXQiOjE3NzI3Nzk3MTEsImV4cCI6MjYzNjc3OTcxMX0.4-2YYmkOi9JrUtdFYiuhFayleKkxxCFLSEyzpLhklss" preload="metadata" />
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group cursor-pointer" onClick={toggleRestaurantAudio}>
