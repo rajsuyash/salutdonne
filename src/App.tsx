@@ -22,6 +22,8 @@ import {
   Calendar
 } from 'lucide-react';
 import { supabase } from './lib/supabase';
+import { useLanguage, getAppTranslations, getSharedTranslations } from './i18n';
+import LanguageSwitcher from './components/LanguageSwitcher';
 
 const useScroll = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -119,6 +121,8 @@ const LeDonnaLogo = ({ className = "w-10 h-10" }) => (
 );
 
 const PaymentModal = ({ plan, onClose, onSuccess }) => {
+  const { lang } = useLanguage();
+  const s = getSharedTranslations(lang);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -176,10 +180,10 @@ const PaymentModal = ({ plan, onClose, onSuccess }) => {
         <div className="p-6 md:p-8">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <h3 className="text-2xl font-bold text-white">Subscribe to {plan.title}</h3>
+              <h3 className="text-2xl font-bold text-white">{s.payment.subscribeTo} {plan.title}</h3>
               <p className="text-slate-400 mt-1 flex items-baseline">
                 <span className="text-xl text-white font-bold">${plan.price}</span>
-                <span className="text-sm ml-1">/month</span>
+                <span className="text-sm ml-1">{s.payment.perMonth}</span>
               </p>
             </div>
             <button onClick={onClose} className="p-2 bg-white/5 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
@@ -196,39 +200,39 @@ const PaymentModal = ({ plan, onClose, onSuccess }) => {
           <form onSubmit={handlePayment} className="space-y-5">
             <div className="space-y-4">
               <div className="group">
-                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Email</label>
+                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{s.payment.emailLabel}</label>
                 <input
                   required
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="you@company.com"
+                  placeholder={s.payment.emailPlaceholder}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 />
               </div>
 
               <div className="group">
-                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Name</label>
+                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{s.payment.nameLabel}</label>
                 <input
                   required
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="John Doe"
+                  placeholder={s.payment.namePlaceholder}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 />
               </div>
 
               <div className="group">
-                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Company (Optional)</label>
+                <label className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">{s.payment.companyLabel}</label>
                 <input
                   type="text"
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
-                  placeholder="Acme Inc."
+                  placeholder={s.payment.companyPlaceholder}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 />
               </div>
@@ -242,11 +246,11 @@ const PaymentModal = ({ plan, onClose, onSuccess }) => {
               {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Redirecting to Stripe...</span>
+                  <span>{s.payment.redirecting}</span>
                 </>
               ) : (
                 <>
-                  <span>Continue to Payment</span>
+                  <span>{s.payment.continueToPayment}</span>
                   <ChevronRight className="w-4 h-4" />
                 </>
               )}
@@ -254,7 +258,7 @@ const PaymentModal = ({ plan, onClose, onSuccess }) => {
 
             <p className="text-xs text-center text-slate-500 mt-4 flex items-center justify-center gap-2">
               <Lock className="w-3 h-3" />
-              Secure payment powered by Stripe
+              {s.payment.securePayment}
             </p>
           </form>
         </div>
@@ -264,6 +268,10 @@ const PaymentModal = ({ plan, onClose, onSuccess }) => {
 };
 
 export default function App() {
+  const { lang } = useLanguage();
+  const t = getAppTranslations(lang);
+  const s = getSharedTranslations(lang);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -347,29 +355,37 @@ export default function App() {
     }
   }, []);
 
+  const navItems = [
+    { label: t.nav.audioProof, id: 'audio-proof' },
+    { label: t.nav.problem, id: 'problem' },
+    { label: t.nav.methodology, id: 'methodology' },
+    { label: t.nav.useCases, id: 'use-cases' },
+    { label: t.nav.pricing, id: 'pricing' },
+  ];
+
   const features = [
     {
       icon: <MessageSquare className="w-6 h-6" />,
-      title: "Hyper-Real Conversations",
-      desc: "Reasoning models that pause, think, and react like a human. No scripts, just intellect.",
+      title: lang === 'fr' ? 'Conversations hyper-r\u00e9alistes' : lang === 'it' ? 'Conversazioni iper-realistiche' : 'Hyper-Real Conversations',
+      desc: lang === 'fr' ? 'Des mod\u00e8les de raisonnement qui r\u00e9fl\u00e9chissent et r\u00e9agissent comme un humain.' : lang === 'it' ? 'Modelli di ragionamento che pensano e reagiscono come un umano.' : 'Reasoning models that pause, think, and react like a human. No scripts, just intellect.',
       colSpan: "md:col-span-2"
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      title: "Infinite Availability",
-      desc: "Time zones are obsolete. 24/7/365 coverage without overtime pay.",
+      title: lang === 'fr' ? 'Disponibilit\u00e9 infinie' : lang === 'it' ? 'Disponibilit\u00e0 infinita' : 'Infinite Availability',
+      desc: lang === 'fr' ? 'Les fuseaux horaires sont obsol\u00e8tes. Couverture 24/7/365 sans heures suppl\u00e9mentaires.' : lang === 'it' ? 'I fusi orari sono obsoleti. Copertura 24/7/365 senza straordinari.' : 'Time zones are obsolete. 24/7/365 coverage without overtime pay.',
       colSpan: "md:col-span-1"
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "Instant Execution",
-      desc: "From intent to action in milliseconds. Bookings, sales, support.",
+      title: lang === 'fr' ? 'Ex\u00e9cution instantan\u00e9e' : lang === 'it' ? 'Esecuzione istantanea' : 'Instant Execution',
+      desc: lang === 'fr' ? 'De l\'intention \u00e0 l\'action en millisecondes. R\u00e9servations, ventes, support.' : lang === 'it' ? 'Dall\'intenzione all\'azione in millisecondi. Prenotazioni, vendite, supporto.' : 'From intent to action in milliseconds. Bookings, sales, support.',
       colSpan: "md:col-span-1"
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      title: "Omnichannel Brain",
-      desc: "One consciousness across Voice, SMS, Email, and WhatsApp.",
+      title: lang === 'fr' ? 'Cerveau omnicanal' : lang === 'it' ? 'Cervello omnicanale' : 'Omnichannel Brain',
+      desc: lang === 'fr' ? 'Une seule conscience \u00e0 travers Voix, SMS, Email et WhatsApp.' : lang === 'it' ? 'Una sola coscienza attraverso Voce, SMS, Email e WhatsApp.' : 'One consciousness across Voice, SMS, Email, and WhatsApp.',
       colSpan: "md:col-span-2"
     }
   ];
@@ -381,8 +397,8 @@ export default function App() {
         <div className="fixed top-4 right-4 z-[60] bg-green-500/90 backdrop-blur-xl border border-green-400/20 text-white px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-top-5 duration-500 flex items-center gap-3">
           <CheckCircle className="w-6 h-6" />
           <div>
-            <p className="font-bold">Payment Successful!</p>
-            <p className="text-sm text-green-100">Your subscription is now active. Check your email for details.</p>
+            <p className="font-bold">{s.payment.paymentSuccess}</p>
+            <p className="text-sm text-green-100">{s.payment.paymentSuccessDesc}</p>
           </div>
         </div>
       )}
@@ -391,8 +407,8 @@ export default function App() {
         <div className="fixed top-4 right-4 z-[60] bg-black/90 backdrop-blur-xl border border-white/10 text-white px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-top-5 duration-500 flex items-center gap-3">
           <X className="w-6 h-6" />
           <div>
-            <p className="font-bold">Payment Canceled</p>
-            <p className="text-sm text-slate-300">No charges were made. You can try again anytime.</p>
+            <p className="font-bold">{s.payment.paymentCanceled}</p>
+            <p className="text-sm text-slate-300">{s.payment.paymentCanceledDesc}</p>
           </div>
         </div>
       )}
@@ -404,23 +420,24 @@ export default function App() {
               <LeDonnaLogo className="w-10 h-10 group-hover:scale-110 transition-transform duration-300" />
               <div className="flex flex-col">
                 <span className="text-2xl font-bold tracking-tight text-white group-hover:text-gray-300 transition-colors leading-none">Le Donna</span>
-                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-gray-400 font-medium">AI Voice Assistant</span>
+                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-gray-400 font-medium">{s.brandSubtitle}</span>
               </div>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              {['Audio Proof', 'Problem', 'Methodology', 'Use Cases', 'Pricing'].map((item) => (
+              {navItems.map((item) => (
                 <a
-                  key={item}
-                  href={`#${item.toLowerCase().replace(' ', '-')}`}
+                  key={item.id}
+                  href={`#${item.id}`}
                   className="text-sm font-medium text-slate-300 hover:text-white transition-colors relative group"
                 >
-                  {item}
+                  {item.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full" />
                 </a>
               ))}
+              <LanguageSwitcher />
               <Button variant="glow" className="py-2 px-6 text-sm rounded-lg" onClick={handleBookDemo}>
-                Book Demo
+                {t.nav.bookDemo}
               </Button>
             </div>
 
@@ -441,27 +458,27 @@ export default function App() {
           <ParallaxItem speed={-0.2} className="space-y-8">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-sm font-medium text-white">System Operational 24/7</span>
+              <span className="text-sm font-medium text-white">{t.hero.badge}</span>
             </div>
 
             <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter text-white leading-[0.9]">
-              Stop Losing Revenue <br />
+              {t.hero.headline1} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-white animate-gradient bg-[length:200%_auto]">
-                to Missed Calls
+                {t.hero.headline2}
               </span>
             </h1>
 
             <p className="text-xl text-slate-300 max-w-lg leading-relaxed font-light border-l-2 border-white pl-6">
-              The AI receptionist that answers phone calls 24/7, books appointments, and syncs with your CRM. Sounds 100% human. Lowers costs by 87%.
+              {t.hero.description}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-5 pt-4">
               <Button variant="primary" onClick={() => document.getElementById('audio-proof').scrollIntoView()}>
                 <Play className="w-4 h-4 mr-2" />
-                Hear a Live Demo
+                {t.hero.ctaDemo}
               </Button>
               <Button variant="secondary" className="group" onClick={() => document.getElementById('pricing').scrollIntoView()}>
-                View Pricing
+                {t.hero.ctaPricing}
               </Button>
             </div>
           </ParallaxItem>
@@ -479,7 +496,7 @@ export default function App() {
                       <Mic className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <div className="text-sm text-slate-400">Active Call</div>
+                      <div className="text-sm text-slate-400">{t.hero.phoneCard.activeCall}</div>
                       <div className="font-mono text-white">00:42</div>
                     </div>
                   </div>
@@ -492,18 +509,18 @@ export default function App() {
 
                 <div className="space-y-6 my-auto">
                    <div className="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/5 backdrop-blur-sm">
-                    <p className="text-sm text-slate-300">"I need to reschedule my appointment to next Tuesday."</p>
+                    <p className="text-sm text-slate-300">{t.hero.phoneCard.callerMessage}</p>
                   </div>
                   <div className="bg-white/90 p-4 rounded-2xl rounded-tr-none ml-auto max-w-[90%] shadow-lg border border-white/10">
-                    <p className="text-sm text-black">"I can help with that. Tuesday at 2:00 PM or 4:00 PM?"</p>
+                    <p className="text-sm text-black">{t.hero.phoneCard.aiResponse}</p>
                   </div>
                 </div>
 
                 <div className="pt-6 border-t border-white/5 flex justify-between items-center">
-                   <div className="text-xs text-slate-500 uppercase tracking-widest">Sentiment Analysis</div>
+                   <div className="text-xs text-slate-500 uppercase tracking-widest">{t.hero.phoneCard.sentimentAnalysis}</div>
                    <div className="flex items-center text-green-400 text-sm font-bold">
                      <TrendingUp className="w-4 h-4 mr-1" />
-                     Positive (98%)
+                     {t.hero.phoneCard.positive}
                    </div>
                 </div>
               </div>
@@ -514,8 +531,8 @@ export default function App() {
                     <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Task Completed</div>
-                    <div className="text-sm font-bold text-white">Booking Confirmed</div>
+                    <div className="text-xs text-slate-400">{t.hero.phoneCard.taskCompleted}</div>
+                    <div className="text-sm font-bold text-white">{t.hero.phoneCard.bookingConfirmed}</div>
                   </div>
                 </div>
               </div>
@@ -524,20 +541,20 @@ export default function App() {
         </div>
 
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 animate-bounce">
-          <span className="text-xs uppercase tracking-widest text-slate-400">Scroll</span>
+          <span className="text-xs uppercase tracking-widest text-slate-400">{t.hero.scroll}</span>
           <div className="w-px h-12 bg-gradient-to-b from-slate-400 to-transparent" />
         </div>
       </div>
 
       <Section id="audio-proof" className="bg-black">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Real AI. Real Conversations. No Robotics.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t.audioProof.title}</h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-8">
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group cursor-pointer" onClick={toggleProductAudio}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white">Guiding a Customer Choose a Product</h3>
+              <h3 className="text-xl font-bold text-white">{t.audioProof.card1Title}</h3>
               <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isPlayingProduct ? 'bg-white/40 animate-pulse' : 'bg-white/20 group-hover:bg-white/30'}`}>
                 {isPlayingProduct ? <div className="flex space-x-1">
                   {[1,2,3].map((i) => (
@@ -546,13 +563,13 @@ export default function App() {
                 </div> : <Play className="w-6 h-6 text-white" />}
               </div>
             </div>
-            <p className="text-slate-400 text-sm">Hear how Le Donna asks questions, understands needs, and recommends the perfect solution.</p>
+            <p className="text-slate-400 text-sm">{t.audioProof.card1Desc}</p>
             <audio ref={productAudioRef} src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/choosing%20barbeque.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9jaG9vc2luZyBiYXJiZXF1ZS5tcDMiLCJpYXQiOjE3NzI3Nzk3MTEsImV4cCI6MjYzNjc3OTcxMX0.4-2YYmkOi9JrUtdFYiuhFayleKkxxCFLSEyzpLhklss" preload="metadata" />
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group cursor-pointer" onClick={toggleRestaurantAudio}>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white">Booking a Table at a Restaurant</h3>
+              <h3 className="text-xl font-bold text-white">{t.audioProof.card2Title}</h3>
               <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${isPlayingRestaurant ? 'bg-white/40 animate-pulse' : 'bg-white/20 group-hover:bg-white/30'}`}>
                 {isPlayingRestaurant ? <div className="flex space-x-1">
                   {[1,2,3].map((i) => (
@@ -561,19 +578,19 @@ export default function App() {
                 </div> : <Play className="w-6 h-6 text-white" />}
               </div>
             </div>
-            <p className="text-slate-400 text-sm">Hear how Le Donna handles restaurant reservations naturally and efficiently.</p>
+            <p className="text-slate-400 text-sm">{t.audioProof.card2Desc}</p>
             <audio ref={restaurantAudioRef} src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/recording%20-%20isolated.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9yZWNvcmRpbmcgLSBpc29sYXRlZC5tcDMiLCJpYXQiOjE3NzE2OTE3ODksImV4cCI6MTgwMzIyNzc4OX0.x2ZXfD-g5IArQM_OrAOOMR_uVWXcN0UB-RYs3GQmESs" preload="metadata" />
           </div>
         </div>
 
         <p className="text-center text-slate-500 text-sm max-w-2xl mx-auto">
-          <span className="font-semibold text-slate-400">Note:</span> These voices are 100% AI generated with &lt;500ms latency.
+          <span className="font-semibold text-slate-400">Note:</span> {t.audioProof.note}
         </p>
       </Section>
 
       <Section id="problem" className="bg-gradient-to-b from-black to-black">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Your Phone is Leaking Money.</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t.problem.title}</h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -581,39 +598,27 @@ export default function App() {
             <div className="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center mb-6">
               <Clock className="w-8 h-8 text-red-400" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">The "Hold" Problem</h3>
-            <p className="text-slate-400 leading-relaxed mb-4">
-              60% of customers hang up after 1 minute on hold.
-            </p>
-            <p className="text-white font-semibold">
-              Le Donna answers instantly.
-            </p>
+            <h3 className="text-2xl font-bold text-white mb-4">{t.problem.card1Title}</h3>
+            <p className="text-slate-400 leading-relaxed mb-4">{t.problem.card1Desc}</p>
+            <p className="text-white font-semibold">{t.problem.card1Solution}</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-red-500/20 hover:border-red-500/40 transition-all">
             <div className="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center mb-6">
               <TrendingUp className="w-8 h-8 text-red-400" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">The Salary Trap</h3>
-            <p className="text-slate-400 leading-relaxed mb-4">
-              Human agents cost $4,000/mo and call in sick.
-            </p>
-            <p className="text-white font-semibold">
-              Le Donna costs $200/mo and works 24/7.
-            </p>
+            <h3 className="text-2xl font-bold text-white mb-4">{t.problem.card2Title}</h3>
+            <p className="text-slate-400 leading-relaxed mb-4">{t.problem.card2Desc}</p>
+            <p className="text-white font-semibold">{t.problem.card2Solution}</p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-red-500/20 hover:border-red-500/40 transition-all">
             <div className="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center mb-6">
               <Phone className="w-8 h-8 text-red-400" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-4">The Missed Lead</h3>
-            <p className="text-slate-400 leading-relaxed mb-4">
-              A missed call at 6 PM is a deal lost to a competitor.
-            </p>
-            <p className="text-white font-semibold">
-              Le Donna captures leads while you sleep.
-            </p>
+            <h3 className="text-2xl font-bold text-white mb-4">{t.problem.card3Title}</h3>
+            <p className="text-slate-400 leading-relaxed mb-4">{t.problem.card3Desc}</p>
+            <p className="text-white font-semibold">{t.problem.card3Solution}</p>
           </div>
         </div>
       </Section>
@@ -626,65 +631,63 @@ export default function App() {
             <div className="bg-black/50 backdrop-blur-sm p-8 rounded-3xl border border-red-500/20 transform scale-90 origin-right opacity-60 hover:opacity-100 transition-all duration-500">
                <div className="flex items-center gap-4 mb-6 text-red-400">
                  <X className="w-8 h-8" />
-                 <h3 className="text-2xl font-bold">Legacy Call Center</h3>
+                 <h3 className="text-2xl font-bold">{t.methodology.legacyTitle}</h3>
                </div>
                <div className="space-y-4 text-slate-400">
                  <div className="flex justify-between border-b border-white/5 pb-2">
-                   <span>Cost Per Minute</span>
-                   <span className="text-white font-mono">$4.00</span>
+                   <span>{t.methodology.costPerMinute}</span>
+                   <span className="text-white font-mono">{t.methodology.legacyCost}</span>
                  </div>
                  <div className="flex justify-between border-b border-white/5 pb-2">
-                   <span>Availability</span>
-                   <span className="text-white font-mono">9 AM - 5 PM</span>
+                   <span>{t.methodology.availability}</span>
+                   <span className="text-white font-mono">{t.methodology.legacyAvailability}</span>
                  </div>
                  <div className="flex justify-between border-b border-white/5 pb-2">
-                   <span>Capacity</span>
-                   <span className="text-white font-mono">1 Call/Agent</span>
+                   <span>{t.methodology.capacity}</span>
+                   <span className="text-white font-mono">{t.methodology.legacyCapacity}</span>
                  </div>
                  <div className="flex justify-between border-b border-white/5 pb-2">
-                   <span>Training Time</span>
-                   <span className="text-white font-mono">4 Weeks</span>
+                   <span>{t.methodology.trainingTime}</span>
+                   <span className="text-white font-mono">{t.methodology.legacyTraining}</span>
                  </div>
                </div>
             </div>
 
             <div className="absolute top-10 -right-4 md:-right-12 bg-black/90 backdrop-blur-xl p-8 rounded-3xl border border-white/50 shadow-2xl shadow-white/20 transform md:scale-105 z-10 hover:-translate-y-2 transition-transform duration-500">
-               <div className="absolute -top-4 -right-4 bg-white text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg">FUTURE</div>
+               <div className="absolute -top-4 -right-4 bg-white text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg">{t.methodology.futureLabel}</div>
                <div className="flex items-center gap-4 mb-6 text-white">
                  <Zap className="w-8 h-8" />
-                 <h3 className="text-2xl font-bold text-white">Le Donna AI Agent</h3>
+                 <h3 className="text-2xl font-bold text-white">{t.methodology.leDonnaTitle}</h3>
                </div>
                <div className="space-y-4 text-slate-300">
                  <div className="flex justify-between items-center border-b border-white/30 pb-2">
-                   <span>Cost Per Minute</span>
-                   <span className="text-green-400 font-bold font-mono text-xl">$0.50</span>
+                   <span>{t.methodology.costPerMinute}</span>
+                   <span className="text-green-400 font-bold font-mono text-xl">{t.methodology.donnaCost}</span>
                  </div>
                  <div className="flex justify-between items-center border-b border-white/30 pb-2">
-                   <span>Availability</span>
-                   <span className="text-white font-mono text-lg">24/7/365</span>
+                   <span>{t.methodology.availability}</span>
+                   <span className="text-white font-mono text-lg">{t.methodology.donnaAvailability}</span>
                  </div>
                  <div className="flex justify-between items-center border-b border-white/30 pb-2">
-                   <span>Capacity</span>
-                   <span className="text-white font-mono text-lg">Unlimited</span>
+                   <span>{t.methodology.capacity}</span>
+                   <span className="text-white font-mono text-lg">{t.methodology.donnaCapacity}</span>
                  </div>
                  <div className="flex justify-between items-center border-b border-white/30 pb-2">
-                   <span>Training Time</span>
-                   <span className="text-white font-mono text-lg">Instant</span>
+                   <span>{t.methodology.trainingTime}</span>
+                   <span className="text-white font-mono text-lg">{t.methodology.donnaTraining}</span>
                  </div>
                </div>
             </div>
           </div>
 
           <div className="order-1 md:order-2 text-left md:pl-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">The Comparison <br /><span className="text-white">That Matters</span></h2>
-            <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-              Legacy call centers drain resources with high overhead and limited capacity. Le Donna delivers unlimited concurrent calls at a fraction of the cost, with instant deployment and zero training time.
-            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">{t.methodology.title} <br /><span className="text-white">{t.methodology.subtitle}</span></h2>
+            <p className="text-slate-400 text-lg mb-8 leading-relaxed">{t.methodology.description}</p>
             <div className="flex items-center gap-4 text-sm font-medium text-white">
                <div className="flex -space-x-4">
                   {[1,2,3].map(i => <div key={i} className="w-10 h-10 rounded-full bg-gray-700 border-2 border-black" />)}
                </div>
-               <p>Replaced 500+ traditional agents this year.</p>
+               <p>{t.methodology.replacedAgents}</p>
             </div>
           </div>
         </div>
@@ -692,33 +695,17 @@ export default function App() {
 
       <Section id="use-cases" className="bg-gradient-to-b from-black to-black">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Built for Your Industry</h2>
-          <p className="text-slate-400 text-lg">Real use cases for businesses that can't afford to miss calls.</p>
+          <h2 className="text-4xl font-bold text-white mb-4">{t.useCases.title}</h2>
+          <p className="text-slate-400 text-lg">{t.useCases.subtitle}</p>
         </div>
 
         <div className="flex overflow-x-auto pb-12 gap-6 snap-x hide-scrollbar">
-          {[
-            {
-              industry: "HVAC Companies",
-              icon: <Zap className="w-6 h-6" />,
-              description: "Le Donna asks about the issue, checks the technician's calendar, and books the slot automatically. Perfect for emergency calls and after-hours scheduling."
-            },
-            {
-              industry: "Retail Brands",
-              icon: <Calendar className="w-6 h-6" />,
-              description: "Handles order inquiries, product availability questions, and store location requests. Routes complex issues to the right department while answering common questions instantly."
-            },
-            {
-              industry: "Home Services",
-              icon: <Phone className="w-6 h-6" />,
-              description: "Captures lead information, qualifies prospects, and routes urgent requests to on-call teams. Never miss a high-value service call again."
-            }
-          ].map((useCase, i) => (
+          {t.useCases.cases.map((useCase, i) => (
             <div key={i} className="min-w-[300px] md:min-w-[400px] bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/5 hover:border-white/50 transition-colors snap-center">
               <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 text-white">
-                {useCase.icon}
+                {[<Zap className="w-6 h-6" />, <Calendar className="w-6 h-6" />, <Phone className="w-6 h-6" />][i]}
               </div>
-              <h3 className="text-xl font-bold text-white mb-4">Perfect for {useCase.industry}</h3>
+              <h3 className="text-xl font-bold text-white mb-4">{lang === 'fr' ? 'Id\u00e9al pour ' : lang === 'it' ? 'Perfetto per ' : 'Perfect for '}{useCase.industry}</h3>
               <p className="text-slate-300 leading-relaxed">{useCase.description}</p>
             </div>
           ))}
@@ -729,80 +716,60 @@ export default function App() {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
 
         <div className="text-center max-w-3xl mx-auto mb-20 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Investment</h2>
-          <p className="text-slate-400">Transparent pricing. No contracts. Cancel anytime.</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">{t.pricing.title}</h2>
+          <p className="text-slate-400">{t.pricing.subtitle}</p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
-          {[
-            {
-              title: "Starter",
-              price: "200",
-              desc: "For local businesses",
-              features: ["400 AI Minutes ($0.50/min)", "Standard Voice", "Email Analytics"],
-              color: "from-gray-800 to-gray-900"
-            },
-            {
-              title: "Growth",
-              price: "500",
-              desc: "For scaling teams",
-              recommended: true,
-              features: ["1,200 AI Minutes", "Custom Workflows", "CRM Integration", "24/7 Support"],
-              color: "from-white to-gray-200"
-            },
-            {
-              title: "Enterprise",
-              price: "Custom",
-              desc: "For organizations",
-              features: ["Unlimited Volume", "Dedicated Instance", "SLA Guarantees", "API Access"],
-              color: "from-gray-800 to-black"
-            }
-          ].map((plan, index) => (
-            <div key={index} className={`relative p-1 rounded-3xl ${plan.recommended ? 'bg-gradient-to-b from-white to-gray-300 shadow-2xl shadow-white/20 -translate-y-4' : 'bg-black/50 border border-white/10'}`}>
-              <div className="h-full bg-black/90 backdrop-blur-xl rounded-[1.3rem] p-8 flex flex-col">
-                {plan.recommended && (
-                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
-                     Best Value
-                   </div>
-                )}
+          {t.pricing.plans.map((plan, index) => {
+            const recommended = index === 1;
+            return (
+              <div key={index} className={`relative p-1 rounded-3xl ${recommended ? 'bg-gradient-to-b from-white to-gray-300 shadow-2xl shadow-white/20 -translate-y-4' : 'bg-black/50 border border-white/10'}`}>
+                <div className="h-full bg-black/90 backdrop-blur-xl rounded-[1.3rem] p-8 flex flex-col">
+                  {recommended && (
+                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-black px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
+                       {t.pricing.bestValue}
+                     </div>
+                  )}
 
-                <div className="mb-8">
-                  <h3 className="text-xl font-medium text-slate-300 mb-2">{plan.title}</h3>
-                  <div className="flex items-baseline gap-1">
-                    {plan.price !== 'Custom' && <span className="text-sm align-top text-slate-500">$</span>}
-                    <span className="text-5xl font-bold text-white">{plan.price}</span>
-                    {plan.price !== 'Custom' && <span className="text-slate-500">/mo</span>}
-                  </div>
-                  <p className="text-slate-500 mt-4 text-sm">{plan.desc}</p>
-                </div>
-
-                <div className="space-y-4 mb-8 flex-1">
-                  {plan.features.map((feat, i) => (
-                    <div key={i} className="flex items-center text-sm text-slate-300">
-                      <CheckCircle className="w-4 h-4 text-white mr-3 flex-shrink-0" />
-                      {feat}
+                  <div className="mb-8">
+                    <h3 className="text-xl font-medium text-slate-300 mb-2">{plan.title}</h3>
+                    <div className="flex items-baseline gap-1">
+                      {plan.price !== 'Custom' && <span className="text-sm align-top text-slate-500">$</span>}
+                      <span className="text-5xl font-bold text-white">{plan.price}</span>
+                      {plan.price !== 'Custom' && <span className="text-slate-500">/mo</span>}
                     </div>
-                  ))}
-                </div>
+                    <p className="text-slate-500 mt-4 text-sm">{plan.desc}</p>
+                  </div>
 
-                <Button
-                  variant={plan.recommended ? 'glow' : 'secondary'}
-                  className="w-full"
-                  onClick={() => {
-                    if (plan.price === "200") {
-                      window.open('https://tidycal.com/rajsuyash/200', '_blank');
-                    } else if (plan.price === "500") {
-                      window.open('https://tidycal.com/rajsuyash/500', '_blank');
-                    } else {
-                      window.open('https://tidycal.com/rajsuyash/custom', '_blank');
-                    }
-                  }}
-                >
-                  {plan.price === "Custom" ? "Contact Sales" : "Book Onboarding Call"}
-                </Button>
+                  <div className="space-y-4 mb-8 flex-1">
+                    {plan.features.map((feat, i) => (
+                      <div key={i} className="flex items-center text-sm text-slate-300">
+                        <CheckCircle className="w-4 h-4 text-white mr-3 flex-shrink-0" />
+                        {feat}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    variant={recommended ? 'glow' : 'secondary'}
+                    className="w-full"
+                    onClick={() => {
+                      if (plan.price === "200") {
+                        window.open('https://tidycal.com/rajsuyash/200', '_blank');
+                      } else if (plan.price === "500") {
+                        window.open('https://tidycal.com/rajsuyash/500', '_blank');
+                      } else {
+                        window.open('https://tidycal.com/rajsuyash/custom', '_blank');
+                      }
+                    }}
+                  >
+                    {plan.price === "Custom" ? t.pricing.contactSales : t.pricing.bookOnboarding}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Section>
 
@@ -814,8 +781,8 @@ export default function App() {
                 <LeDonnaLogo className="w-10 h-10" />
                 <span className="text-3xl font-bold text-white">Le Donna</span>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-6">Ready to automate?</h3>
-              <p className="mb-8 text-lg">Join the revolution. Stop losing calls. Start gaining customers.</p>
+              <h3 className="text-2xl font-bold text-white mb-6">{t.footer.readyTitle}</h3>
+              <p className="mb-8 text-lg">{t.footer.readyDesc}</p>
               <div className="space-y-4">
                  <a href="mailto:rajsuyash@gmail.com" className="flex items-center text-white hover:text-gray-300 transition-colors">
                    <MessageSquare className="w-5 h-5 mr-3" /> rajsuyash@gmail.com
@@ -832,19 +799,19 @@ export default function App() {
 
             <form className="bg-white/5 p-8 rounded-3xl border border-white/10 space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <input placeholder="Name" className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
-                <input placeholder="Company" className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
+                <input placeholder={t.footer.namePlaceholder} className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
+                <input placeholder={t.footer.companyPlaceholder} className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
               </div>
-              <input type="email" placeholder="Work Email" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
-              <Button variant="glow" className="w-full" onClick={handleBookDemo}>Request Demo</Button>
+              <input type="email" placeholder={t.footer.emailPlaceholder} className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-white outline-none transition-colors" />
+              <Button variant="glow" className="w-full" onClick={handleBookDemo}>{t.footer.requestDemo}</Button>
             </form>
           </div>
 
           <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between text-sm">
-            <p>© 2024 Le Donna AI Inc.</p>
+            <p>{s.footer.copyright}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Terms</a>
+              <a href="#" className="hover:text-white">{s.footer.privacy}</a>
+              <a href="#" className="hover:text-white">{s.footer.terms}</a>
               <a href="#" className="hover:text-white">Twitter</a>
             </div>
           </div>
