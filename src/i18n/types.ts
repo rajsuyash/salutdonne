@@ -1,5 +1,21 @@
 export type SupportedLang = 'en' | 'fr' | 'it';
 
+export interface BlogTranslations {
+  blogTitle: string;
+  blogSubtitle: string;
+  allCategories: string;
+  readMore: string;
+  readingTime: string;
+  backToBlog: string;
+  tableOfContents: string;
+  sharePost: string;
+  relatedPosts: string;
+  bookDemo: string;
+  bookDemoDesc: string;
+  bookDemoButton: string;
+  categories: Record<string, string>;
+}
+
 export interface SharedTranslations {
   brandSubtitle: string;
   languageNames: {
