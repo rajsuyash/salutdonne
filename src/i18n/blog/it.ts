@@ -17,5 +17,8 @@ export const blogIt: BlogTranslations = {
     'Home Services': 'Servizi per la casa',
     'Specialty Brands': 'Marchi specializzati',
     'AI Automation': 'Automazione IA',
+    'Business Intelligence': 'Business Intelligence',
+    'Customer Experience': 'Esperienza del cliente',
+    'Business Growth': 'Crescita aziendale',
   },
 };
