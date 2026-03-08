@@ -101,6 +101,12 @@ export default function LeDonna() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <a
+                href={`/${lang}/blog`}
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+              >
+                Blog
+              </a>
               <LanguageSwitcher />
               <button
                 onClick={handleDemo}
