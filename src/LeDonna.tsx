@@ -65,7 +65,7 @@ export default function LeDonna() {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch(() => setIsPlaying(false));
         setIsPlaying(true);
       }
     }
@@ -509,7 +509,7 @@ export default function LeDonna() {
 
       <audio
         ref={audioRef}
-        src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/recording%20-%20isolated.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9yZWNvcmRpbmcgLSBpc29sYXRlZC5tcDMiLCJpYXQiOjE3NzE2OTE3ODksImV4cCI6MTgwMzIyNzc4OX0.x2ZXfD-g5IArQM_OrAOOMR_uVWXcN0UB-RYs3GQmESs"
+        src="/audio/booking-table.mp3"
         preload="metadata"
       />
     </div>

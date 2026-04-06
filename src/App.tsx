@@ -313,7 +313,7 @@ export default function App() {
           productAudioRef.current.currentTime = 0;
           setIsPlayingProduct(false);
         }
-        restaurantAudioRef.current.play();
+        restaurantAudioRef.current.play().catch(() => setIsPlayingRestaurant(false));
         setIsPlayingRestaurant(true);
       }
     }
@@ -331,7 +331,7 @@ export default function App() {
           restaurantAudioRef.current.currentTime = 0;
           setIsPlayingRestaurant(false);
         }
-        productAudioRef.current.play();
+        productAudioRef.current.play().catch(() => setIsPlayingProduct(false));
         setIsPlayingProduct(true);
       }
     }
@@ -571,7 +571,7 @@ export default function App() {
               </div>
             </div>
             <p className="text-slate-400 text-sm">{t.audioProof.card1Desc}</p>
-            <audio ref={productAudioRef} src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/choosing%20barbeque.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9jaG9vc2luZyBiYXJiZXF1ZS5tcDMiLCJpYXQiOjE3NzI3Nzk3MTEsImV4cCI6MjYzNjc3OTcxMX0.4-2YYmkOi9JrUtdFYiuhFayleKkxxCFLSEyzpLhklss" preload="metadata" />
+            <audio ref={productAudioRef} src="/audio/choosing-barbeque.mp3" preload="metadata" />
           </div>
 
           <div className="bg-white/5 backdrop-blur-sm p-8 rounded-3xl border border-white/10 hover:border-white/50 transition-all group cursor-pointer" onClick={toggleRestaurantAudio}>
@@ -586,7 +586,7 @@ export default function App() {
               </div>
             </div>
             <p className="text-slate-400 text-sm">{t.audioProof.card2Desc}</p>
-            <audio ref={restaurantAudioRef} src="https://uegkdaedcqiuqxdidkgt.supabase.co/storage/v1/object/sign/donna/recording%20-%20isolated.mp3?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85NDkzYmJkZS00MGJjLTQ3YzItODM3MC1hNzM4MDk1ZmZkNDciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb25uYS9yZWNvcmRpbmcgLSBpc29sYXRlZC5tcDMiLCJpYXQiOjE3NzE2OTE3ODksImV4cCI6MTgwMzIyNzc4OX0.x2ZXfD-g5IArQM_OrAOOMR_uVWXcN0UB-RYs3GQmESs" preload="metadata" />
+            <audio ref={restaurantAudioRef} src="/audio/booking-table.mp3" preload="metadata" />
           </div>
         </div>
 
