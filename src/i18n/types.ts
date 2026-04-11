@@ -127,14 +127,23 @@ export interface AppTranslations {
   pricing: {
     title: string;
     subtitle: string;
+    includedLabel: string;
+    rateLabel: string;
+    perMonth: string;
     plans: Array<{
       title: string;
+      tagline: string;
       price: string;
-      desc: string;
+      setup: string;
+      includedMinutes: string;
+      ratePerMinute: string;
+      beyondLabel: string;
+      beyondValue: string;
+      inheritsTitle?: string;
       features: string[];
+      excluded?: string[];
     }>;
     bestValue: string;
-    contactSales: string;
     bookOnboarding: string;
   };
   footer: {

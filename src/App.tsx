@@ -727,9 +727,10 @@ export default function App() {
           <p className="text-slate-400">{t.pricing.subtitle}</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto relative z-10">
           {t.pricing.plans.map((plan, index) => {
             const recommended = index === 1;
+            const tidyCalUrls = ['https://tidycal.com/rajsuyash/200', 'https://tidycal.com/rajsuyash/500'];
             return (
               <div key={index} className={`relative p-1 rounded-3xl ${recommended ? 'bg-gradient-to-b from-white to-gray-300 shadow-2xl shadow-white/20 -translate-y-4' : 'bg-black/50 border border-white/10'}`}>
                 <div className="h-full bg-black/90 backdrop-blur-xl rounded-[1.3rem] p-8 flex flex-col">
@@ -739,39 +740,61 @@ export default function App() {
                      </div>
                   )}
 
-                  <div className="mb-8">
-                    <h3 className="text-xl font-medium text-slate-300 mb-2">{plan.title}</h3>
+                  <div className="mb-6">
+                    <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest mb-2">{plan.title}</h3>
+                    <p className="text-slate-400 text-sm mb-6">{plan.tagline}</p>
                     <div className="flex items-baseline gap-1">
-                      {plan.price !== 'Custom' && <span className="text-sm align-top text-slate-500">$</span>}
-                      <span className="text-5xl font-bold text-white">{plan.price}</span>
-                      {plan.price !== 'Custom' && <span className="text-slate-500">/mo</span>}
+                      <span className="text-5xl font-bold text-white">€{plan.price}</span>
+                      <span className="text-slate-500">{t.pricing.perMonth}</span>
                     </div>
-                    <p className="text-slate-500 mt-4 text-sm">{plan.desc}</p>
+                    <p className="text-slate-500 mt-2 text-sm">{plan.setup}</p>
                   </div>
 
-                  <div className="space-y-4 mb-8 flex-1">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4 mb-6 space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">{t.pricing.includedLabel}</span>
+                      <span className="text-white font-medium">{plan.includedMinutes}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">{t.pricing.rateLabel}</span>
+                      <span className="text-emerald-400 font-medium">{plan.ratePerMinute}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">{plan.beyondLabel}</span>
+                      <span className="text-white font-medium">{plan.beyondValue}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-8 flex-1">
+                    {plan.inheritsTitle && (
+                      <p className="text-white font-semibold text-sm mb-2">{plan.inheritsTitle}</p>
+                    )}
                     {plan.features.map((feat, i) => (
-                      <div key={i} className="flex items-center text-sm text-slate-300">
-                        <CheckCircle className="w-4 h-4 text-white mr-3 flex-shrink-0" />
-                        {feat}
+                      <div key={i} className="flex items-start text-sm text-slate-300">
+                        <CheckCircle className="w-4 h-4 text-emerald-400 mr-3 flex-shrink-0 mt-0.5" />
+                        <span>{feat}</span>
                       </div>
                     ))}
+                    {plan.excluded && plan.excluded.length > 0 && (
+                      <div className="pt-4 mt-2 border-t border-white/10 space-y-3">
+                        {plan.excluded.map((feat, i) => (
+                          <div key={`ex-${i}`} className="flex items-start text-sm text-slate-500">
+                            <X className="w-4 h-4 text-slate-500 mr-3 flex-shrink-0 mt-0.5" />
+                            <span>{feat}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <Button
                     variant={recommended ? 'glow' : 'secondary'}
                     className="w-full"
                     onClick={() => {
-                      if (plan.price === "200") {
-                        window.open('https://tidycal.com/rajsuyash/200', '_blank');
-                      } else if (plan.price === "500") {
-                        window.open('https://tidycal.com/rajsuyash/500', '_blank');
-                      } else {
-                        window.open('https://tidycal.com/rajsuyash/custom', '_blank');
-                      }
+                      window.open(tidyCalUrls[index] || 'https://tidycal.com/rajsuyash/custom', '_blank');
                     }}
                   >
-                    {plan.price === "Custom" ? t.pricing.contactSales : t.pricing.bookOnboarding}
+                    {t.pricing.bookOnboarding}
                   </Button>
                 </div>
               </div>
