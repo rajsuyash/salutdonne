@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 import { useLanguage, getBlogTranslations, getSharedTranslations } from '../i18n';
 import { blogPosts } from '../content/blog';
 import BlogCard from '../components/blog/BlogCard';
 import BlogFilter from '../components/blog/BlogFilter';
+import TopNav from '../components/TopNav';
 
 export default function BlogList() {
   const { lang } = useLanguage();
@@ -28,29 +27,10 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            to={`/${lang}/`}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-lg font-bold tracking-tight">Salut Donna</span>
-          </Link>
-          <nav className="flex items-center gap-4">
-            <Link
-              to={`/${lang}/ledonna`}
-              className="text-sm text-slate-400 hover:text-white transition-colors"
-            >
-              Le Donna
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <TopNav />
 
       {/* Hero */}
-      <section className="py-20 md:py-28">
+      <section className="pt-36 pb-20 md:pt-44 md:pb-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             {t.blogTitle}

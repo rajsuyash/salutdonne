@@ -7,6 +7,7 @@ import { useBlogPost } from '../hooks/useBlogPost';
 import { useMetaTags } from '../hooks/useMetaTags';
 import TableOfContents from '../components/blog/TableOfContents';
 import BlogCTA from '../components/blog/BlogCTA';
+import TopNav from '../components/TopNav';
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -59,28 +60,18 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-white/10 sticky top-0 bg-black/80 backdrop-blur-md z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <TopNav />
+
+      {/* Post Header */}
+      <section className="pt-32 pb-8 md:pt-40">
+        <div className="max-w-3xl mx-auto px-4">
           <Link
             to={`/${lang}/blog`}
-            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
             {t.backToBlog}
           </Link>
-          <Link
-            to={`/${lang}/`}
-            className="text-lg font-bold tracking-tight text-white"
-          >
-            Salut Donna
-          </Link>
-        </div>
-      </header>
-
-      {/* Post Header */}
-      <section className="pt-16 pb-8">
-        <div className="max-w-3xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-6">
             <span className="px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-slate-300">
               {categoryLabel}
