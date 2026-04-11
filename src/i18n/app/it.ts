@@ -42,7 +42,7 @@ export const appIt: AppTranslations = {
     card1Solution: 'Le Donna risponde istantaneamente.',
     card2Title: 'La trappola dello stipendio',
     card2Desc: 'Un agente umano costa 4.000\u20ac/mese e pu\u00f2 ammalarsi.',
-    card2Solution: 'Le Donna costa 200\u20ac/mese e lavora 24/7.',
+    card2Solution: 'Le Donna costa 500\u20ac/mese e lavora 24/7.',
     card3Title: 'Il contatto perso',
     card3Desc: 'Una chiamata persa alle 18:00 \u00e8 un affare perso per un concorrente.',
     card3Solution: 'Le Donna cattura i contatti mentre dormi.',
