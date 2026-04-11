@@ -42,7 +42,7 @@ export const appFr: AppTranslations = {
     card1Solution: 'Le Donna r\u00e9pond instantan\u00e9ment.',
     card2Title: 'Le pi\u00e8ge du salaire',
     card2Desc: 'Un agent humain co\u00fbte 4 000\u20ac/mois et peut tomber malade.',
-    card2Solution: 'Le Donna co\u00fbte 500\u20ac/mois et travaille 24/7.',
+    card2Solution: 'Le Donna co\u00fbte 499\u20ac/mois et travaille 24/7.',
     card3Title: 'Le prospect perdu',
     card3Desc: 'Un appel manqu\u00e9 \u00e0 18h, c\'est un client perdu au profit d\'un concurrent.',
     card3Solution: 'Le Donna capture les prospects pendant que vous dormez.',

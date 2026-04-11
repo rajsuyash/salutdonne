@@ -42,7 +42,7 @@ export const appEn: AppTranslations = {
     card1Solution: 'Le Donna answers instantly.',
     card2Title: 'The Salary Trap',
     card2Desc: 'Human agents cost $4,000/mo and call in sick.',
-    card2Solution: 'Le Donna costs \u20ac500/mo and works 24/7.',
+    card2Solution: 'Le Donna costs \u20ac499/mo and works 24/7.',
     card3Title: 'The Missed Lead',
     card3Desc: 'A missed call at 6 PM is a deal lost to a competitor.',
     card3Solution: 'Le Donna captures leads while you sleep.',
