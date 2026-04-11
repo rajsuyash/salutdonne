@@ -416,13 +416,13 @@ export default function App() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-4' : 'py-8'}`}>
         <div className={`max-w-7xl mx-auto px-6 rounded-2xl transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-xl border border-white/10 mx-4 shadow-2xl' : 'bg-transparent'}`}>
           <div className="flex justify-between items-center h-14">
-            <div className="flex items-center space-x-3 cursor-pointer group">
+            <a href={`/${lang}`} className="flex items-center space-x-3 cursor-pointer group" aria-label="Le Donna home">
               <LeDonnaLogo className="w-10 h-10 group-hover:scale-110 transition-transform duration-300" />
               <div className="flex flex-col">
                 <span className="text-2xl font-bold tracking-tight text-white group-hover:text-gray-300 transition-colors leading-none">Le Donna</span>
                 <span className="text-[0.65rem] uppercase tracking-[0.2em] text-gray-400 font-medium">{s.brandSubtitle}</span>
               </div>
-            </div>
+            </a>
 
             <div className="hidden md:flex items-center space-x-8">
               {navItems.map((item) => (
