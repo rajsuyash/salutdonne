@@ -814,8 +814,8 @@ export default function App() {
               <h3 className="text-2xl font-bold text-white mb-6">{t.footer.readyTitle}</h3>
               <p className="mb-8 text-lg">{t.footer.readyDesc}</p>
               <div className="space-y-4">
-                 <a href="mailto:rajsuyash@gmail.com" className="flex items-center text-white hover:text-gray-300 transition-colors">
-                   <MessageSquare className="w-5 h-5 mr-3" /> rajsuyash@gmail.com
+                 <a href="mailto:hello@salutdonna.com" className="flex items-center text-white hover:text-gray-300 transition-colors">
+                   <MessageSquare className="w-5 h-5 mr-3" /> hello@salutdonna.com
                  </a>
                  <div className="flex items-center text-white">
                    <Phone className="w-5 h-5 mr-3" /> +33 07 66 15 84 99
